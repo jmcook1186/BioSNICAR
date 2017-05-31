@@ -6,14 +6,14 @@ This repository contains all the necessary code and data files to run Bio-SNICAR
 
 ### How do I get set up? ###
 
-The essential scripts are all written for Matlab. This includes the driver software, the radiative transfer code, which are all that are needed to run model experiments using our existing impurity lookup library. However, if new impurities are to be created additional scripts are used. A few of these are currently coded in Python, but will be translated for Matlab. All the necessary data files and scripts are included in this repository. Basic usage guidelines are provided below, but for etailed instructions we direct the user to the instruction manual available in the repo.
+The essential scripts are all written for Matlab. This includes the driver software, the radiative transfer code, which are all that are needed to run model experiments using our existing impurity lookup library. However, if new impurities are to be created additional scripts are used. A few of these are currently coded in Python, but will be translated for Matlab. All the necessary data files and scripts are included in this repository. Basic usage guidelines are provided below, but for detailed instructions we direct the user to the instruction manual available in the repo.
 
 The software versions used to write the codes were Matlab R2016b and Python 3.4 using the Anaconda 3.4.3 distribution (Windows 64bit). 
 
 
 ### Contribution guidelines ###
 
-We welcome collaborations and contributions from other developers.
+We welcome collaborations and contributions from other developers. We highlight the incorporation of grain shape effects and translation of BioSNICAR into Python as particularly useful development goals.
 
 ### Who do I talk to? ###
 
