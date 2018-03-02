@@ -65,7 +65,9 @@
 % loaded below under "Set incident solar flux spectral distribution:"
 %
 %
+
 %%%%%  Output data: %%%%%
+
 % All output data is contained in the matrix "data_out"
 % data_out(:,1) = wavelength (microns, m^-6)
 % data_out(:,2) = spectrally-dependent albedo;
@@ -88,9 +90,9 @@ function data_out = snicar8d(BND_TYP_IN, DIRECT_IN, APRX_TYP_IN, ...
                              mss_cnc_sot1_in, mss_cnc_sot2_in, ...
                              mss_cnc_dst1_in, mss_cnc_dst2_in, ...
                              mss_cnc_dst3_in, mss_cnc_dst4_in, ...
-                             mss_cnc_ash1_in,mss_cnc_bio1_in, mss_cnc_bio2_in,mss_cnc_bio3_in,mss_cnc_bio4_in,mss_cnc_bio5_in, mss_cnc_bio6_in, mss_cnc_bio7_in, mss_cnc_water1_in, fl_sot1_in, fl_sot2_in, ...
+                             mss_cnc_ash1_in,mss_cnc_bio1_in, mss_cnc_bio2_in,mss_cnc_bio3_in,mss_cnc_bio4_in,mss_cnc_bio5_in, mss_cnc_bio6_in, mss_cnc_bio7_in, mss_cnc_RBio1_in, mss_cnc_hematite_in, mss_cnc_mixed_sand_in, fl_sot1_in, fl_sot2_in, ...
                              fl_dst1_in, fl_dst2_in, fl_dst3_in, ...
-                             fl_dst4_in, fl_ash1_in,fl_bio1_in,fl_bio2_in,fl_bio3_in,fl_bio4_in, fl_bio5_in,fl_bio6_in, fl_bio7_in, fl_water1_in);
+                             fl_dst4_in, fl_ash1_in,fl_bio1_in,fl_bio2_in,fl_bio3_in,fl_bio4_in, fl_bio5_in,fl_bio6_in, fl_bio7_in, fl_RBio1_in, fl_hematite_in, fl_mixed_sand_in);
 
     
 if (1==0)
@@ -118,10 +120,12 @@ if (1==0)
     %fl_in_usr = 'H:FromGardner/snicar_package/ice_wrn_20000.nc';
 
     % ALTERNATIVE GRAIN SIZES FOR COATED SPHERES
-    rds_coated(1:nbr_lyr) = 100;
+    
+    rds_coated(1:nbr_lyr) = 100;   % JC EDIT
     
     % NUMBER OF PARTICLE SPECIES IN SNOW (ICE EXCLUDED)
-    nbr_aer = 15;
+    
+    nbr_aer = 17; % JC EDIT
   
     
     % PARTICLE MASS MIXING RATIOS (units: ng g-1)
@@ -132,15 +136,16 @@ if (1==0)
     mss_cnc_dst3(1:nbr_lyr)  = 0.0;    % dust species 3
     mss_cnc_dst4(1:nbr_lyr)  = 0.0;    % dust species 4
     mss_cnc_ash1(1:nbr_lyr)  = 0.0;    % volcanic ash species 1
-    mss_cnc_bio1(1:nbr_lyr)  = 0.0;    % biological impurity 1
-    mss_cnc_bio2(1:nbr_lyr)  = 0.0;    % biological impurity 2
-    mss_cnc_bio3(1:nbr_lyr)  = 0.0;    % biological impurity 3
-    mss_cnc_bio4(1:nbr_lyr)  = 0.0;    % biological impurity 4
-    mss_cnc_bio5(1:nbr_lyr)  = 0.0;    % biological impurity 5
-    mss_cnc_bio6(1:nbr_lyr)  = 0.0;    % biological impurity 6
-    mss_cnc_bio7(1:nbr_lyr)  = 0.0;    % biological impurity 7
-    mss_cnc_water1(1:nbr_lyr)= 0.0;    % water type 1 (0.2mm spheres)
-  
+    mss_cnc_bio1(1:nbr_lyr)  = 0.0;    % biological impurity 1 % JC EDIT
+    mss_cnc_bio2(1:nbr_lyr)  = 0.0;    % biological impurity 2 % JC EDIT
+    mss_cnc_bio3(1:nbr_lyr)  = 0.0;    % biological impurity 3 % JC EDIT
+    mss_cnc_bio4(1:nbr_lyr)  = 0.0;    % biological impurity 4 % JC EDIT
+    mss_cnc_bio5(1:nbr_lyr)  = 0.0;    % biological impurity 5 % JC EDIT
+    mss_cnc_bio6(1:nbr_lyr)  = 0.0;    % biological impurity 6 % JC EDIT
+    mss_cnc_bio7(1:nbr_lyr)  = 0.0;    % biological impurity 7 % JC EDIT
+    mss_cnc_RBio1(1:nbr_lyr) = 0.0; % Algae measured pigments % JC EDIT
+    mss_cnc_hematite(1:nbr_lyr)= 0.0;    % hematite type 1 % JC EDIT
+    mss_cnc_mixed_sand(1:nbr_lyr) = 0.0; % mixed sand % JC EDIT
     
     % FILE NAMES CONTAINING MIE PARAMETERS FOR ALL AEROSOL SPECIES:
     % (ideally, these files should exist in all 'band' directories)
@@ -151,23 +156,26 @@ if (1==0)
     fl_dst3  = 'aer_dst_bln_20060904_03.nc';
     fl_dst4  = 'aer_dst_bln_20060904_04.nc';
     fl_ash1  = 'volc_ash_mtsthelens_20081011.nc';
-    fl_bio1  = 'biological_1.nc' % Biological impurity 1 (30um diameter, 1.5%chll a, 10% each 1 % 2 carotenoids)
-    fl_bio2  = 'biological_2.nc'; % Biological impurity 2 (30um diameter, 1.5%chll a, 5% each 1 % 2 carotenoids)
-    fl_bio3  = 'biological_3.nc'; % Biological impurity 3 (30um diameter, 1.5%chll a, 1% each 1 % 2 carotenoids)
-    fl_bio4  = 'biological_4.nc'; % Biological impurity 4 (30um diameter, 1.5%chll a only)
-    fl_bio5  = 'biological_5.nc'; % Biological impurity 5 (10um diameter, pigs as per bio2)
-    fl_bio6  = 'biological_6.nc'; % Biological impurity 6 (50um diameter, pigs as per bio2)
-    fl_bio7  = 'biological_7.nc'; % Biological impurity 6 (20um diameter, pigs as per bio2)
-    fl_water1 = 'water_segelstein_20.nc'; %water type 1 (0.2mm spheres)
-    
+    fl_bio1  = 'biological_1.nc' % Biological impurity 1 (30um diameter, 1.5%chll a, 10% each 1 % 2 carotenoids) % JC EDIT
+    fl_bio2  = 'biological_2.nc'; % Biological impurity 2 (30um diameter, 1.5%chll a, 5% each 1 % 2 carotenoids) % JC EDIT
+    fl_bio3  = 'biological_3.nc'; % Biological impurity 3 (30um diameter, 1.5%chll a, 1% each 1 % 2 carotenoids) % JC EDIT
+    fl_bio4  = 'biological_4.nc'; % Biological impurity 4 (30um diameter, 1.5%chll a only) % JC EDIT
+    fl_bio5  = 'biological_5.nc'; % Biological impurity 5 (10um diameter, pigs as per bio2) % JC EDIT
+    fl_bio6  = 'biological_6.nc'; % Biological impurity 6 (50um diameter, pigs as per bio2) % JC EDIT
+    fl_bio7  = 'biological_7.nc'; % Biological impurity 6 (20um diameter, pigs as per bio2) % JC EDIT
+    fl_RBio1 = 'Real_Bio1.nc' % Biological impurity with measured pigments, 20 micron diam % JC EDIT
+    fl_hematite = 'Hematite.nc'; % hematite type 1 % JC EDIT
+    fl_mixed_sand = 'mixed_sand.nc'; % mixed sand % JC EDIT
     
     % COSINE OF SOLAR ZENITH ANGLE FOR DIRECT-BEAM RT
+    
     coszen=0.5;
 
   
     % REFLECTANCE OF SURFACE UNDERLYING SNOW:
     % (value applied to all wavelengths.  user can also specify
     % spectrally-dependent ground albedo below)
+    
     R_sfc_all_wvl = 0.25;
   
   
@@ -200,21 +208,22 @@ else
     rds_coated    = rds_coated_in;
 
     mss_cnc_sot1  = mss_cnc_sot1_in;
-    mss_cnc_sot2  = mss_cnc_sot2_in;
-    mss_cnc_dst1  = mss_cnc_dst1_in;
-    mss_cnc_dst2  = mss_cnc_dst2_in;
-    mss_cnc_dst3  = mss_cnc_dst3_in;
-    mss_cnc_dst4  = mss_cnc_dst4_in;
-    mss_cnc_ash1  = mss_cnc_ash1_in;
-    mss_cnc_bio1  = mss_cnc_bio1_in;
-    mss_cnc_bio2  = mss_cnc_bio2_in;
-    mss_cnc_bio3  = mss_cnc_bio3_in;
-    mss_cnc_bio4  = mss_cnc_bio4_in;
-    mss_cnc_bio5  = mss_cnc_bio5_in;
-    mss_cnc_bio6  = mss_cnc_bio6_in;
-    mss_cnc_bio7  = mss_cnc_bio7_in;
-    mss_cnc_water1 = mss_cnc_water1_in;
-    
+    mss_cnc_sot2  = mss_cnc_sot2_in;  
+    mss_cnc_dst1  = mss_cnc_dst1_in;  
+    mss_cnc_dst2  = mss_cnc_dst2_in;  
+    mss_cnc_dst3  = mss_cnc_dst3_in;  
+    mss_cnc_dst4  = mss_cnc_dst4_in;  
+    mss_cnc_ash1  = mss_cnc_ash1_in;  
+    mss_cnc_bio1  = mss_cnc_bio1_in;   % JC EDIT
+    mss_cnc_bio2  = mss_cnc_bio2_in;   % JC EDIT
+    mss_cnc_bio3  = mss_cnc_bio3_in;   % JC EDIT
+    mss_cnc_bio4  = mss_cnc_bio4_in;   % JC EDIT
+    mss_cnc_bio5  = mss_cnc_bio5_in;   % JC EDIT
+    mss_cnc_bio6  = mss_cnc_bio6_in;   % JC EDIT
+    mss_cnc_bio7  = mss_cnc_bio7_in;   % JC EDIT
+    mss_cnc_RBio1 = mss_cnc_RBio1_in; % JC EDIT
+    mss_cnc_hematite = mss_cnc_hematite_in;   % JC EDIT
+    mss_cnc_mixed_sand = mss_cnc_mixed_sand_in; % JC EDIT
     
     fl_sot1       = fl_sot1_in;
     fl_sot2       = fl_sot2_in;
@@ -223,14 +232,16 @@ else
     fl_dst3       = fl_dst3_in;
     fl_dst4       = fl_dst4_in;
     fl_ash1       = fl_ash1_in;
-    fl_bio1       = fl_bio1_in;
-    fl_bio2       = fl_bio2_in;
-    fl_bio3       = fl_bio3_in;
-    fl_bio4       = fl_bio4_in;
-    fl_bio5       = fl_bio5_in;
-    fl_bio6       = fl_bio6_in;
-    fl_bio7       = fl_bio7_in;
-    fl_water1     = fl_water1_in;
+    fl_bio1       = fl_bio1_in;   % JC EDIT
+    fl_bio2       = fl_bio2_in;   % JC EDIT
+    fl_bio3       = fl_bio3_in;   % JC EDIT
+    fl_bio4       = fl_bio4_in;   % JC EDIT
+    fl_bio5       = fl_bio5_in;   % JC EDIT
+    fl_bio6       = fl_bio6_in;   % JC EDIT
+    fl_bio7       = fl_bio7_in;   % JC EDIT
+    fl_RBio1      = fl_RBio1_in; % JC EDIT
+    fl_hematite   = fl_hematite_in;   % JC EDIT
+    fl_mixed_sand = fl_mixed_sand_in; % JC EDIT
 
     
 end;
@@ -379,36 +390,46 @@ for n=1:nbr_lyr
        
     %NEW code for reading in rds_coated() when rds_snw() is set to zero
        %(i.e. using ice spheres coated with a water film)
-    if (rds_snw(n) == 0)
-        s3 = int2str(rds_coated(n));
-        fl_in = strcat(wrkdir,fl_stb1,fl_stb3,s3,fl_stb2)
+       
+    if (rds_snw(n) == 0)    % JC EDIT
+        
+        %s3 = int2str(rds_coated(n));   % JC EDIT
+        s3 = rds_coated(n);
+        
+        fl_in = strcat(wrkdir,fl_stb1,fl_stb3,s3,fl_stb2)   % JC EDIT
     %   *************************************************        
-    elseif (rds_snw(n)<10)
-        s1    = int2str(0);
-        s2    = int2str(rds_snw(n));
-        fl_in = strcat(wrkdir,fl_stb1,s1,s1,s1,s2,fl_stb2);
-    elseif (rds_snw(n)<100)
-        s1    = int2str(0);
-        s2    = int2str(rds_snw(n));
-        fl_in = strcat(wrkdir,fl_stb1,s1,s1,s2,fl_stb2);
-    elseif ((rds_snw(n)>=100) & (rds_snw(n)<1000))
-        s1    = int2str(0);
-        s2    = int2str(rds_snw(n));
-        fl_in = strcat(wrkdir,fl_stb1,s1,s2,fl_stb2);
-    elseif ((rds_snw(n)>=1000) & (rds_snw(n)<9999))
-        s1    = int2str(0);
-        s2    = int2str(rds_snw(n));
-        fl_in = strcat(wrkdir,fl_stb1,s2,fl_stb2);
-    elseif (rds_snw(n)>9999)
-        s2 = int2str(rds_snw(n));
-        fl_in = strcat(wrkdir,fl_stb1,s2,fl_stb2);   
-    elseif (rds_snw(n)==99999)
-        fl_in = fl_in_usr;
+    elseif (rds_snw(n)<10)   % JC EDIT
+        s1    = int2str(0);   % JC EDIT
+        s2    = int2str(rds_snw(n));   % JC EDIT
+        fl_in = strcat(wrkdir,fl_stb1,s1,s1,s1,s2,fl_stb2);   % JC EDIT
     
-    end;
+    elseif (rds_snw(n)<100)   % JC EDIT
+        s1    = int2str(0);   % JC EDIT
+        s2    = int2str(rds_snw(n));   % JC EDIT
+        fl_in = strcat(wrkdir,fl_stb1,s1,s1,s2,fl_stb2);   % JC EDIT
+    
+    elseif ((rds_snw(n)>=100) & (rds_snw(n)<1000))   % JC EDIT
+        s1    = int2str(0);   % JC EDIT
+        s2    = int2str(rds_snw(n));   % JC EDIT
+        fl_in = strcat(wrkdir,fl_stb1,s1,s2,fl_stb2);   % JC EDIT
+    
+    elseif ((rds_snw(n)>=1000) & (rds_snw(n)<9999))   % JC EDIT
+        s1    = int2str(0);   % JC EDIT
+        s2    = int2str(rds_snw(n));   % JC EDIT
+        fl_in = strcat(wrkdir,fl_stb1,s2,fl_stb2);   % JC EDIT
+    
+    elseif (rds_snw(n)>9999)   % JC EDIT
+        s2 = int2str(rds_snw(n));   % JC EDIT
+        fl_in = strcat(wrkdir,fl_stb1,s2,fl_stb2);   % JC EDIT   
+    
+    elseif (rds_snw(n)==99999)   % JC EDIT
+        fl_in = fl_in_usr;   % JC EDIT
+    
+    end;   % JC EDIT
 
     % single-scatter albedo, mass extinction coefficient, and
     % asymmetry paramater
+    
     omega_snw(:,n)       = ncread(fl_in,'ss_alb');
     ext_cff_mss_snw(:,n) = ncread(fl_in,'ext_cff_mss');
     g_snw(:,n)           = ncread(fl_in,'asm_prm');
@@ -424,14 +445,17 @@ fl_in4 = strcat(wrkdir,fl_dst2);
 fl_in5 = strcat(wrkdir,fl_dst3);
 fl_in6 = strcat(wrkdir,fl_dst4);
 fl_in7 = strcat(wrkdir,fl_ash1);
-fl_in8 = strcat(wrkdir,fl_bio1);
-fl_in9 = strcat(wrkdir,fl_bio2);
-fl_in10 = strcat(wrkdir,fl_bio3);
-fl_in11 = strcat(wrkdir,fl_bio4);
-fl_in12 = strcat(wrkdir,fl_bio5);
-fl_in13 = strcat(wrkdir,fl_bio6);
-fl_in14 = strcat(wrkdir,fl_water1);
-fl_in15 = strcat(wrkdir,fl_bio7);
+fl_in8 = strcat(wrkdir,fl_bio1); % JC EDIT
+fl_in9 = strcat(wrkdir,fl_bio2); % JC EDIT
+fl_in10 = strcat(wrkdir,fl_bio3); % JC EDIT
+fl_in11 = strcat(wrkdir,fl_bio4); % JC EDIT
+fl_in12 = strcat(wrkdir,fl_bio5); % JC EDIT
+fl_in13 = strcat(wrkdir,fl_bio6); % JC EDIT
+fl_in14 = strcat(wrkdir,fl_bio7); % JC EDIT
+fl_in15 = strcat(wrkdir,fl_RBio1); % JC EDIT
+fl_in16 = strcat(wrkdir,fl_hematite); % JC EDIT
+fl_in17 = strcat(wrkdir,fl_mixed_sand); % JEC EDIT
+
 
 omega_aer(:,1)       = ncread(fl_in1,'ss_alb');
 g_aer(:,1)           = ncread(fl_in1,'asm_prm');
@@ -454,45 +478,53 @@ omega_aer(:,5)       = ncread(fl_in5,'ss_alb');
 g_aer(:,5)           = ncread(fl_in5,'asm_prm');
 ext_cff_mss_aer(:,5) = ncread(fl_in5,'ext_cff_mss');
 
-omega_aer(:,6)       = ncread(fl_in6,'ss_alb');
-g_aer(:,6)           = ncread(fl_in6,'asm_prm');
-ext_cff_mss_aer(:,6) = ncread(fl_in6,'ext_cff_mss');
+omega_aer(:,6)       = ncread(fl_in6,'ss_alb');   
+g_aer(:,6)           = ncread(fl_in6,'asm_prm');  
+ext_cff_mss_aer(:,6) = ncread(fl_in6,'ext_cff_mss');   
 
-omega_aer(:,7)       = ncread(fl_in7,'ss_alb');
-g_aer(:,7)           = ncread(fl_in7,'asm_prm');
-ext_cff_mss_aer(:,7) = ncread(fl_in7,'ext_cff_mss');
+omega_aer(:,7)       = ncread(fl_in7,'ss_alb');   
+g_aer(:,7)           = ncread(fl_in7,'asm_prm');  
+ext_cff_mss_aer(:,7) = ncread(fl_in7,'ext_cff_mss'); 
 
-omega_aer(:,8)       = ncread(fl_in8,'ss_alb');
-g_aer(:,8)           = ncread(fl_in8,'asm_prm');
-ext_cff_mss_aer(:,8) = ncread(fl_in8,'ext_cff_mss');
+omega_aer(:,8)       = ncread(fl_in8,'ss_alb');   % JC EDIT
+g_aer(:,8)           = ncread(fl_in8,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,8) = ncread(fl_in8,'ext_cff_mss');   % JC EDIT
 
-omega_aer(:,9)       = ncread(fl_in9,'ss_alb');
-g_aer(:,9)           = ncread(fl_in9,'asm_prm');
-ext_cff_mss_aer(:,9) = ncread(fl_in9,'ext_cff_mss');
+omega_aer(:,9)       = ncread(fl_in9,'ss_alb');   % JC EDIT
+g_aer(:,9)           = ncread(fl_in9,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,9) = ncread(fl_in9,'ext_cff_mss');   % JC EDIT
 
-omega_aer(:,10)       = ncread(fl_in10,'ss_alb');
-g_aer(:,10)           = ncread(fl_in10,'asm_prm');
-ext_cff_mss_aer(:,10) = ncread(fl_in10,'ext_cff_mss');
+omega_aer(:,10)       = ncread(fl_in10,'ss_alb');   % JC EDIT
+g_aer(:,10)           = ncread(fl_in10,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,10) = ncread(fl_in10,'ext_cff_mss');   % JC EDIT
 
-omega_aer(:,11)       = ncread(fl_in11,'ss_alb');
-g_aer(:,11)           = ncread(fl_in11,'asm_prm');
-ext_cff_mss_aer(:,11) = ncread(fl_in11,'ext_cff_mss');
+omega_aer(:,11)       = ncread(fl_in11,'ss_alb');   % JC EDIT
+g_aer(:,11)           = ncread(fl_in11,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,11) = ncread(fl_in11,'ext_cff_mss');   % JC EDIT
 
-omega_aer(:,12)       = ncread(fl_in12,'ss_alb');
-g_aer(:,12)           = ncread(fl_in12,'asm_prm');
-ext_cff_mss_aer(:,12) = ncread(fl_in12,'ext_cff_mss');
+omega_aer(:,12)       = ncread(fl_in12,'ss_alb');   % JC EDIT
+g_aer(:,12)           = ncread(fl_in12,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,12) = ncread(fl_in12,'ext_cff_mss');   % JC EDIT
 
-omega_aer(:,13)       = ncread(fl_in13,'ss_alb');
-g_aer(:,13)           = ncread(fl_in13,'asm_prm');
-ext_cff_mss_aer(:,13) = ncread(fl_in13,'ext_cff_mss');
+omega_aer(:,13)       = ncread(fl_in13,'ss_alb');   % JC EDIT
+g_aer(:,13)           = ncread(fl_in13,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,13) = ncread(fl_in13,'ext_cff_mss');   % JC EDIT
+ 
+omega_aer(:,14)       = ncread(fl_in14,'ss_alb');   % JC EDIT
+g_aer(:,14)           = ncread(fl_in14,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,14) = ncread(fl_in14,'ext_cff_mss');    % JC EDIT
 
-omega_aer(:,14)       = ncread(fl_in14,'ss_alb');
-g_aer(:,14)           = ncread(fl_in14,'asm_prm');
-ext_cff_mss_aer(:,14) = ncread(fl_in14,'ext_cff_mss');
+omega_aer(:,15)       = ncread(fl_in15,'ss_alb');   % JC EDIT
+g_aer(:,15)           = ncread(fl_in15,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,15) = ncread(fl_in15,'ext_cff_mss');   % JC EDIT
 
-omega_aer(:,15)       = ncread(fl_in15,'ss_alb');
-g_aer(:,15)           = ncread(fl_in15,'asm_prm');
-ext_cff_mss_aer(:,15) = ncread(fl_in15,'ext_cff_mss');
+omega_aer(:,16)       = ncread(fl_in16,'ss_alb');   % JC EDIT
+g_aer(:,16)           = ncread(fl_in16,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,16) = ncread(fl_in16,'ext_cff_mss');   % JC EDIT
+
+omega_aer(:,17)       = ncread(fl_in17,'ss_alb');   % JC EDIT
+g_aer(:,17)           = ncread(fl_in17,'asm_prm');   % JC EDIT
+ext_cff_mss_aer(:,17) = ncread(fl_in17,'ext_cff_mss');   % JC EDIT
 
 % Set aerosol concentration matrix:
 mss_cnc_aer(1:nbr_lyr,1) = mss_cnc_sot1;
@@ -502,19 +534,20 @@ mss_cnc_aer(1:nbr_lyr,4) = mss_cnc_dst2;
 mss_cnc_aer(1:nbr_lyr,5) = mss_cnc_dst3;
 mss_cnc_aer(1:nbr_lyr,6) = mss_cnc_dst4;
 mss_cnc_aer(1:nbr_lyr,7) = mss_cnc_ash1;
-mss_cnc_aer(1:nbr_lyr,8) = mss_cnc_bio1;
-mss_cnc_aer(1:nbr_lyr,9) = mss_cnc_bio2;
-mss_cnc_aer(1:nbr_lyr,10) = mss_cnc_bio3;
-mss_cnc_aer(1:nbr_lyr,11) = mss_cnc_bio4;
-mss_cnc_aer(1:nbr_lyr,12) = mss_cnc_bio5;
-mss_cnc_aer(1:nbr_lyr,13) = mss_cnc_bio6;
-mss_cnc_aer(1:nbr_lyr,14) = mss_cnc_water1;
-mss_cnc_aer(1:nbr_lyr,15) = mss_cnc_bio7;
+mss_cnc_aer(1:nbr_lyr,8) = mss_cnc_bio1; % JC EDIT
+mss_cnc_aer(1:nbr_lyr,9) = mss_cnc_bio2; % JC EDIT
+mss_cnc_aer(1:nbr_lyr,10) = mss_cnc_bio3; % JC EDIT
+mss_cnc_aer(1:nbr_lyr,11) = mss_cnc_bio4; % JC EDIT
+mss_cnc_aer(1:nbr_lyr,12) = mss_cnc_bio5; % JC EDIT
+mss_cnc_aer(1:nbr_lyr,13) = mss_cnc_bio6; % JC EDIT
+mss_cnc_aer(1:nbr_lyr,14) = mss_cnc_bio7; % JC EDIT
+mss_cnc_aer(1:nbr_lyr,15) = mss_cnc_RBio1; %JC EDIT
+mss_cnc_aer(1:nbr_lyr,16) = mss_cnc_hematite; % JC EDIT
+mss_cnc_aer(1:nbr_lyr,17) = mss_cnc_mixed_sand; % JC EDIT
+
 
 % convert to units of kg/kg:
 mss_cnc_aer = mss_cnc_aer.*10^-9;
-
-
 
 % BEGIN RT SOLVER:
 
@@ -845,7 +878,7 @@ F_abs_nir_btm = sum(F_btm_net(vis_max_idx+1:nir_max_idx));
 
 % Radiative heating rate:
 heat_rt = F_abs_slr./(L_snw.*2117);   % [K/s] 2117 = specific heat ice (J kg-1 K-1)	   
-heat_rt = heat_rt.*3600;              %[K/hr]
+heat_rt = heat_rt.*3600;              % [K/hr]
 				      
 				      
 % Energy conservation check:
@@ -970,6 +1003,14 @@ data_out(18,4) = F_abs_btm;     % solar absorption by underlying surface
 data_out(19,4) = F_abs_vis_btm; % VIS absorption by underlying surface
 data_out(20,4) = F_abs_nir_btm; % NIR absorption by underlying surface
 data_out(21,4) = sum((mu_not*pi*Fs))+sum(Fd);  % total downwelling energy on upper boundary
+data_out([1:5],6) = heat_rt; % JC EDIT output radiative heating rate in each layer in K/hr 
+
+% F_abs_top = data_out(6,4);
+% F_abs_scnd = data_out(9,4);
+% F_abs_thrd = data_out(12,4);
+% F_abs_frth = data_out(15,4);
+% F_abs_btm = data_out(18,4);
+
 
 
 % plot modeled albedo:
