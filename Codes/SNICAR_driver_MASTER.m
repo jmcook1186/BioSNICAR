@@ -60,7 +60,7 @@ clear;
 % RADIATIVE TRANSFER CONFIGURATION:
 BND_TYP  = 1;        % 1= 470 spectral bands
 DIRECT   = 1;        % 1= Direct-beam incident flux, 0= Diffuse incident flux
-APRX_TYP = 1;        % 1= Eddington, 2= Quadrature, 3= Hemispheric Mean
+APRX_TYP = 3;        % 1= Eddington, 2= Quadrature, 3= Hemispheric Mean
 DELTA    = 1;        % 1= Apply Delta approximation, 0= No delta
 
 % COSINE OF SOLAR ZENITH ANGLE FOR DIRECT-BEAM
@@ -74,7 +74,7 @@ R_sfc    = 0.15;
 
 
 % SNOW LAYER THICKNESSES (array) (units: meters):
-dz       = [0.02 0.02 0.02 0.02 0.02];
+dz       = [0.01 0.02 0.02 0.02 0.02];
  
 nbr_lyr  = length(dz);  % number of snow layers
 
@@ -84,7 +84,7 @@ rho_snw(1:nbr_lyr) = [150, 150, 150, 150, 150];
 
 % SNOW EFFECTIVE GRAIN SIZE FOR EACH LAYER (units: microns):
 
-rds_snw(1:nbr_lyr) = [100, 200, 200, 200, 2000];
+rds_snw(1:nbr_lyr) = [1000, 1000, 1500, 2000, 2000];
 
 % IF COATED GRAINS USED, SET rds_snw() to ZEROS and use rds_coated()
 % IF UNCOATED GRAINS USED, SET rds_coated to ZEROS and use rds_snw()
@@ -92,11 +92,10 @@ rds_snw(1:nbr_lyr) = [100, 200, 200, 200, 2000];
 rds_coated(1:nbr_lyr) = ["0","0","0","0","0"];
 
 
-
 nbr_aer = 17;
 
 
-for x = [1e3,1e4,1e5,1e6,2e6,3e6,4e6 5e6 6e6]   % for reference: 1e3 = 1ug/g (1000 ppb or 1 ppm)
+for x = [0, 1e5 1e6 2e6 5e6 8e6 10e6]   % for reference: 1e3 = 1ug/g (1000 ppb or 1 ppm)
                   % 1 e6 = 1000ug = 1mg
 
 % PARTICLE MASS MIXING RATIOS (units: ng(species)/g(ice), or ppb)
@@ -108,13 +107,13 @@ mss_cnc_dst3(1:nbr_lyr)  = [0,0,0,0,0];    % dust species 3
 mss_cnc_dst4(1:nbr_lyr)  = [0,0,0,0,0];    % dust species 4
 mss_cnc_ash1(1:nbr_lyr)  = [0,0,0,0,0];    % volcanic ash species 1
 mss_cnc_bio1(1:nbr_lyr)  = [0,0,0,0,0];    % Biological impurity species 1
-mss_cnc_bio2(1:nbr_lyr)  = [0,0,0,0,0];    % Biological impurity species 2
+mss_cnc_bio2(1:nbr_lyr)  = [x,0,0,0,0];    % Biological impurity species 2
 mss_cnc_bio3(1:nbr_lyr)  = [0,0,0,0,0];    % Biological impurity species 3
 mss_cnc_bio4(1:nbr_lyr)  = [0,0,0,0,0];    % Biological impurity species 4
 mss_cnc_bio5(1:nbr_lyr)  = [0,0,0,0,0];    % Biological impurity species 5
 mss_cnc_bio6(1:nbr_lyr)  = [0,0,0,0,0];    % Biological impurity species 6
 mss_cnc_bio7(1:nbr_lyr)  = [0,0,0,0,0];    % Biological impurity species 7
-mss_cnc_RBio1(1:nbr_lyr) = [x,0,0,0,0]; % Realistic Cell (measured pigments, 20 micron diameter)
+mss_cnc_RBio1(1:nbr_lyr) = [0,0,0,0,0]; % Realistic Cell (measured pigments, 20 micron diameter)
 mss_cnc_hematite(1:nbr_lyr) = [0,0,0,0,0];   % hematite
 mss_cnc_mixed_sand(1:nbr_lyr) = [0,0,0,0,0];  % mixed sand
 
@@ -160,10 +159,24 @@ flx_abs(1)     = data_in(6,4); % top layer solar absorption
 flx_vis_abs(1) = data_in(7,4); % top layer VIS absorption
 flx_nir_abs(1) = data_in(8,4); % top layer NIR absorption
 heat_rt = data_in([1:5],6); % heating rate per layer K/hr
-F_abs = [data_in(6,4),data_in(9,4),data_in(12,4),data_in(15,4),data_in(18,4)] % absorbed energy per layer (W/m2)
-
+F_abs = [data_in(6,4),data_in(9,4),data_in(12,4),data_in(15,4),data_in(18,4)]; % absorbed energy per layer (W/m2)
+intensity2 = data_in([1:470],[7:11]);
 %albedo = smooth(albedo,0.005); % add a simple smoothing function with short period
 
+%separate subsurface light field into layers
+sub1 = smooth(intensity2(:,1),4);
+sub2 = smooth(intensity2(:,2),4);
+sub3 = smooth(intensity2(:,3),4);
+sub4 = smooth(intensity2(:,4),4);
+sub5 = smooth(intensity2(:,5),4);
+
+sub1_tot = sum(sub1);
+sub2_tot = sum(sub2);
+sub3_tot = sum(sub3);
+sub4_tot = sum(sub4);
+sub5_tot = sum(sub5);
+sub_tot_line = [sub1_tot,sub2_tot,sub3_tot,sub4_tot,sub5_tot];
+depths = [dz(1),dz(1)+dz(2),dz(1)+dz(2)+dz(3),dz(1)+dz(2)+dz(3)+dz(4), dz(1)+dz(2)+dz(3)+dz(4)+dz(5)];
 
 figure(1);
 
@@ -178,12 +191,36 @@ ylim([0,1])
 grid on;
 hold on;
 
-% report slope between blue and green reflectance
+% plot subsurface light field
+figure(2);
+plot(wvl, sub1, 'DisplayName','0 - 1 cm');
+plot(wvl, sub2','DisplayName','1 - 3 cm');
+plot(wvl, sub3,'DisplayName','3 - 5 cm');
+plot(wvl, sub4,'DisplayName','5 - 7 cm');
+plot(wvl, sub5,'DisplayName','7 - 9 cm');
+xlabel('Wavelength (\mum)','fontsize',20);
+ylabel('Planar Intensity Wm-2','fontsize',20);
+xlim([0.3 2.5]);
+ylim([0 0.03]);
+set(gca,'xtick',0:0.1:5,'fontsize',16);
+set(gca,'ytick',0:0.01:0.1,'fontsize',16);
+legend;
+hold on
 
+%plot total energy intensity against depth
+figure(3);
+plot(depths,sub_tot_line);
+xlabel('Depth beneath surface (m)','fontsize',20);
+ylabel('planar intensity (Wm-2)','fontsize',20);
+set(gca,'xtick',0:0.01:0.1,'fontsize',16);
+set(gca,'ytick',0:0.1:1,'fontsize',16);
+hold on
+
+% report slope between blue and green reflectance
 bgslope = ((albedo(26)-albedo(18))/0.075);
 
 %Report albedo
-alb_slr % albedo over solar spectrum
+alb_slr; % albedo over solar spectrum
 %flx_abs_snw % absorbed energy in the snowpack
 %heat_rt; % radiative heating rate in K/hr
 

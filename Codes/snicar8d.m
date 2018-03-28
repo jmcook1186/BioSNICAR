@@ -1004,12 +1004,8 @@ data_out(19,4) = F_abs_vis_btm; % VIS absorption by underlying surface
 data_out(20,4) = F_abs_nir_btm; % NIR absorption by underlying surface
 data_out(21,4) = sum((mu_not*pi*Fs))+sum(Fd);  % total downwelling energy on upper boundary
 data_out([1:5],6) = heat_rt; % JC EDIT output radiative heating rate in each layer in K/hr 
+data_out([1:470],[7:11]) = intensity2; %JC EDIT output planar intensity per layer
 
-% F_abs_top = data_out(6,4);
-% F_abs_scnd = data_out(9,4);
-% F_abs_thrd = data_out(12,4);
-% F_abs_frth = data_out(15,4);
-% F_abs_btm = data_out(18,4);
 
 
 
