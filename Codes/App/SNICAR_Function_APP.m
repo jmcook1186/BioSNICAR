@@ -57,7 +57,6 @@ data_in = snicar8d(BND_TYP, DIRECT, APRX_TYP, DELTA, coszen, R_sfc, ...
     mss_cnc_dst3, mss_cnc_dst4, mss_cnc_ash1, mss_cnc_bio1, mss_cnc_bio2,mss_cnc_bio3,mss_cnc_bio4,mss_cnc_bio5, mss_cnc_bio6,mss_cnc_bio7, mss_cnc_Real_Bio1,mss_cnc_hematite, mss_cnc_mixed_sand, fl_sot1, ...
     fl_sot2, fl_dst1, fl_dst2, fl_dst3, fl_dst4, fl_ash1, fl_bio1,fl_bio2,fl_bio3,fl_bio4,fl_bio5,fl_bio6,fl_bio7, fl_Real_Bio1, fl_hematite, fl_mixed_sand);
 
-
 % process input data:
 % (see description of data_out at the end of snicar8d.m for more info)
 wvl         = data_in(:,1);   % wavelength grid
