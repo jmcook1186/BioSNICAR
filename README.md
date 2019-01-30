@@ -4,6 +4,11 @@
 
 This repository contains all the necessary code and data files to run Bio-SNICAR.
 
+### IMPORTANT NOTE ###
+
+Development of BioSNICAR has continued in the form of BioSNICAR_GO (www.github/com/jmcook1186/BioSNICAR_GO/). BioSNICAR_GO includes options to run in Mie scattering or Geometric Optics modes, allowing better modellng of dry or wet snow or ice. There are also significant updates to the bio-optical model and empirical pigment absorption coefficients for glacier algae in that repository. Running BioSNICAR_GO in Mie mode is equivalent to running the original BiOSNICAR model provided here. Since I have been refining, debugging and extending BioSNICAR under the BioSNICAR_GO framework, I strongly suggest using that model in preference to the original code provided here.
+
+
 ### How do I get set up? ###
 
 The essential scripts are all written for Matlab. This includes the driver software, the radiative transfer code, which are all that are needed to run model experiments using our existing impurity lookup library. However, if new impurities are to be created additional scripts are used. A few of these are currently coded in Python, but will be translated for Matlab. All the necessary data files and scripts are included in this repository. Basic usage guidelines are provided below, but for detailed instructions we direct the user to the instruction manual available in the repo.
