@@ -6,7 +6,7 @@ This repository contains all the necessary code and data files to run Bio-SNICAR
 
 ### IMPORTANT NOTE ###
 
-Development of BioSNICAR has continued in the form of BioSNICAR_GO (www.github/com/jmcook1186/BioSNICAR_GO/). BioSNICAR_GO includes options to run in Mie scattering or Geometric Optics modes, allowing better modellng of dry or wet snow or ice. There are also significant updates to the bio-optical model and empirical pigment absorption coefficients for glacier algae in that repository. Running BioSNICAR_GO in Mie mode is equivalent to running the original BiOSNICAR model provided here. Since I have been refining, debugging and extending BioSNICAR under the BioSNICAR_GO framework, I strongly suggest using that model in preference to the original code provided here.
+Development of BioSNICAR has continued in the form of BioSNICAR_GO (www.github/com/jmcook1186/BioSNICAR_GO_PY/). BioSNICAR_GO includes options to run in Mie scattering or Geometric Optics modes, allowing better modellng of dry or wet snow or ice. There are also significant updates to the bio-optical model and empirical pigment absorption coefficients for glacier algae in that repository. Running BioSNICAR_GO in Mie mode is equivalent to running the original BiOSNICAR model provided here. Since I have been refining, debugging and extending BioSNICAR under the BioSNICAR_GO framework, I strongly suggest using that model in preference to the original code provided here.
 
 
 ### How do I get set up? ###
@@ -22,7 +22,7 @@ We welcome collaborations and contributions from other developers. We highlight 
 
 ### Who do I talk to? ###
 
-Please direct queries to Joseph Cook (University of Sheffield) at the following email address: joe.cook@sheffield.ac.uk
+Please direct queries to Joseph Cook (University of Sheffield) at the following email address: jcook@envs.au.dk
 
 ### Usage Guidelines ###
 
